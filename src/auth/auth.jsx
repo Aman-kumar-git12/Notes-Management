@@ -42,7 +42,6 @@ export default function AuthPage() {
 
     try {
       const res = await apiClient.post("/signup", payload);
-      console.log("Signup success:", res.data);
       // Update user context with the response
       setUser(res.data.user || res.data);
       setLoadingSubmit(false);
@@ -51,7 +50,7 @@ export default function AuthPage() {
       setLoadingSubmit(false);
       const errorMsg = err.response?.data?.message || err.message || "Signup failed. Please try again.";
       setError(errorMsg);
-      console.error("Signup error:", err);
+
     }
   };
 
@@ -69,7 +68,6 @@ export default function AuthPage() {
 
     try {
       const res = await apiClient.post("/login", payload);
-      console.log("Login success:", res.data);
       // Update user context with the response
       setUser(res.data.user || res.data);
       setLoadingSubmit(false);
@@ -78,7 +76,6 @@ export default function AuthPage() {
       setLoadingSubmit(false);
       const errorMsg = err.response?.data?.message || err.message || "Login failed. Please try again.";
       setError(errorMsg);
-      console.error("Login error:", err);
     }
   };
 

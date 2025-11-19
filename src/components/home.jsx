@@ -1,13 +1,22 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { ToggleContext } from "../context/togggleContext.jsx";
 import { UserContext } from "../context/UserContext.jsx";
 
 export default function Home() {
+  const navigate = useNavigate();
   const { dark } = useContext(ToggleContext);
-  const { user } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext);
+
+  // ✅ Redirect only after loading is completed
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
+
   return (
     <div
       className={`min-h-screen flex items-center justify-center p-6 transition-colors duration-200 ${
@@ -26,14 +35,24 @@ export default function Home() {
             : "bg-white/80 border-white/30 text-gray-800"
         }`}
       >
-        <h1 className={`text-5xl font-bold mb-6 drop-shadow ${dark ? "text-white" : "text-pink-600"}`}>
+        <h1
+          className={`text-5xl font-bold mb-6 drop-shadow ${
+            dark ? "text-white" : "text-pink-600"
+          }`}
+        >
           {user ? `Welcome, ${user.name || "User"}!` : "Welcome to Aman Notes"}
         </h1>
-        <p className={`text-lg mb-8 leading-relaxed ${dark ? "text-gray-300" : "text-gray-700"}`}>
+
+        <p
+          className={`text-lg mb-8 leading-relaxed ${
+            dark ? "text-gray-300" : "text-gray-700"
+          }`}
+        >
           {user
             ? "Start creating and organizing your notes. Stay productive!"
-            : "Your personal space to create, edit, and save notes. Stay organised, stay productive, and keep your ideas safe in one place."}
+            : "Your personal space to create, edit, and save notes."}
         </p>
+
         <Link to="/notes" className="inline-block">
           <motion.button
             whileHover={{ scale: 1.05 }}

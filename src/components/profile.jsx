@@ -13,7 +13,7 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await apiClient.post("/logout", {}, { withCredentials: true });
-      window.location.href = "/"; // redirect to login
+      window.location.href = "/login"; // redirect to login
     } catch (error) {
       console.log("Logout error:", error);
     }

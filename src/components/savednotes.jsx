@@ -11,43 +11,34 @@ const SavedNotes = () => {
   const [page, setPage] = useState(1);
   const notesPerPage = 1;
 
-  // Modal State
   const [showModal, setShowModal] = useState(false);
   const [selectedNoteId, setSelectedNoteId] = useState(null);
 
-  // Fetch notes
+  // Fetch all notes
   useEffect(() => {
     apiClient
       .get("/notes", { withCredentials: true })
       .then((res) => setNotes(res.data))
-      .catch((err) => console.error("Fetch notes error:", err));
+      .catch((err) => console.log("Fetch notes error:", err));
   }, []);
 
   const totalPages = Math.ceil(notes.length / notesPerPage);
-  const currentNotes = notes.slice(
-    (page - 1) * notesPerPage,
-    page * notesPerPage
-  );
+  const currentNotes = notes.slice((page - 1) * notesPerPage, page * notesPerPage);
 
-  // Open delete modal
   const confirmDelete = (id) => {
     setSelectedNoteId(id);
     setShowModal(true);
   };
 
-  // Delete note
   const handleDelete = async () => {
     if (!selectedNoteId) return;
 
     try {
       await apiClient.delete(`/notes/${selectedNoteId}`);
-
-      // Remove from UI without reload:
       setNotes(notes.filter((n) => n.id !== selectedNoteId));
-
       setShowModal(false);
     } catch (err) {
-      console.error("Delete error:", err);
+      console.log("Delete error:", err);
     }
   };
 
@@ -57,106 +48,103 @@ const SavedNotes = () => {
         <div className="max-w-4xl mx-auto p-4 mt-6">
           <h2 className="text-2xl font-bold mb-4">Your Notes</h2>
 
-          {/* Desktop Grid */}
+          {/* =================== DESKTOP VIEW =================== */}
           <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {notes.length === 0 && <p className="text-gray-500">No notes yet.</p>}
-
-            {notes.map((note) => (
-              <div
-                key={note.id}
-                className={`p-4 rounded-xl shadow relative ${
-                  dark ? "bg-gray-800 text-white" : "bg-white"
-                }`}
-              >
-                <h3 className="text-xl font-semibold">{note.title}</h3>
-                <p className="mt-2 text-gray-600 line-clamp-3">{note.content}</p>
-
-                <p className="mt-3 text-sm text-gray-400">
-                  {new Date(note.createdAt).toLocaleDateString()}
-                </p>
-
-                {/* Buttons */}
-                <div className="mt-4 flex gap-3">
-                  <Link
-                    to={`/notes/${note.id}`}
-                    className="px-3 py-1 bg-blue-500 text-white rounded"
+            {notes.length === 0 ? (
+              <p>No notes yet.</p>
+            ) : (
+              notes.map((note) => (
+                <div
+                  key={note.id}
+                  className={`relative p-5 rounded-2xl shadow-md transition ${
+                    dark
+                      ? "bg-gray-800 text-white border border-gray-700"
+                      : "bg-white border border-gray-200"
+                  }`}
+                >
+                  <h3 className="text-xl font-semibold">{note.title}</h3>
+                  <p
+                    className={`mt-2 line-clamp-3 ${
+                      dark ? "text-gray-300" : "text-gray-700"
+                    }`}
                   >
-                    View
-                  </Link>
+                    {note.content}
+                  </p>
 
-                  <Link
-                    to={`/edit/${note.id}`}
-                    className="px-3 py-1 bg-yellow-500 text-white rounded"
-                  >
-                    Edit
-                  </Link>
+                  <p className="text-xs text-gray-500 mt-3">
+                    {new Date(note.createdAt).toLocaleDateString()}
+                  </p>
 
-                  <button
-                    onClick={() => confirmDelete(note.id)}
-                    className="px-3 py-1 bg-red-500 text-white rounded"
-                  >
-                    Delete
-                  </button>
+                  <div className="mt-4 flex gap-3">
+                    <Link
+                      to={`/notes/${note.id}`}
+                      className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                    >
+                      View
+                    </Link>
+
+                    <Link
+                      to={`/edit/${note.id}`}
+                      className="px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
+                    >
+                      Edit
+                    </Link>
+
+                    <button
+                      onClick={() => confirmDelete(note.id)}
+                      className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
-          {/* MOBILE VIEW */}
+          {/* =================== MOBILE VIEW =================== */}
           <div className="sm:hidden">
             {currentNotes.length > 0 && (
               <div
-                className={`mb-4 rounded-2xl p-5 shadow-lg transition-colors duration-200 ${
+                className={`relative mb-5 p-6 rounded-3xl shadow-lg transition ${
                   dark
                     ? "bg-gray-800 text-white border border-gray-700"
-                    : "bg-white text-gray-900 border border-gray-200"
+                    : "bg-white border border-gray-200"
                 }`}
               >
-                <h3 className="text-2xl font-bold mb-2 truncate">
+                <h3 className="text-2xl font-bold mb-2">
                   {currentNotes[0].title}
                 </h3>
                 <p
-                  className={`mb-4 text-base break-words ${
-                    dark ? "text-gray-200" : "text-gray-700"
+                  className={`text-base mb-3 ${
+                    dark ? "text-gray-300" : "text-gray-700"
                   }`}
                 >
                   {currentNotes[0].content}
                 </p>
-                <p
-                  className={`text-xs mb-4 font-medium ${
-                    dark ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
+
+                <p className="text-xs text-gray-500">
                   {new Date(currentNotes[0].createdAt).toLocaleDateString()}
                 </p>
-                <div className="mt-3 flex gap-2">
+
+                <div className="mt-4 flex gap-2">
                   <Link
                     to={`/notes/${currentNotes[0].id}`}
-                    className={`flex-1 px-4 py-2 rounded-lg font-semibold text-center text-base transition-all duration-150 ${
-                      dark
-                        ? "bg-blue-700 text-white hover:bg-blue-800"
-                        : "bg-blue-500 text-white hover:bg-blue-600"
-                    }`}
+                    className="flex-1 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                   >
                     View
                   </Link>
+
                   <Link
                     to={`/edit/${currentNotes[0].id}`}
-                    className={`flex-1 px-4 py-2 rounded-lg font-semibold text-center text-base transition-all duration-150 ${
-                      dark
-                        ? "bg-yellow-500 text-gray-900 hover:bg-yellow-600"
-                        : "bg-yellow-400 text-gray-900 hover:bg-yellow-500"
-                    }`}
+                    className="flex-1 py-2 bg-yellow-400 text-gray-900 rounded-lg hover:bg-yellow-500"
                   >
                     Edit
                   </Link>
+
                   <button
                     onClick={() => confirmDelete(currentNotes[0].id)}
-                    className={`flex-1 px-4 py-2 rounded-lg font-semibold text-center text-base transition-all duration-150 ${
-                      dark
-                        ? "bg-red-700 text-white hover:bg-red-800"
-                        : "bg-red-500 text-white hover:bg-red-600"
-                    }`}
+                    className="flex-1 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
                   >
                     Delete
                   </button>
@@ -164,30 +152,24 @@ const SavedNotes = () => {
               </div>
             )}
 
-            {/* Pagination styling */}
-            <div className="flex justify-between items-center mt-3">
+            {/* Pagination */}
+            <div className="flex justify-between mt-4">
               <button
                 disabled={page === 1}
-                className={`px-4 py-2 rounded font-medium transition disabled:opacity-50 ${
-                  dark
-                    ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                    : "bg-pink-500 text-white hover:bg-pink-600"
-                }`}
                 onClick={() => setPage(page - 1)}
+                className="px-4 py-2 bg-pink-500 text-white rounded-lg disabled:opacity-50 hover:bg-pink-600"
               >
                 Prev
               </button>
-              <span className="text-lg font-semibold">
+
+              <span className="font-semibold">
                 {page} / {totalPages}
               </span>
+
               <button
                 disabled={page === totalPages}
-                className={`px-4 py-2 rounded font-medium transition disabled:opacity-50 ${
-                  dark
-                    ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                    : "bg-pink-500 text-white hover:bg-pink-600"
-                }`}
                 onClick={() => setPage(page + 1)}
+                className="px-4 py-2 bg-pink-500 text-white rounded-lg disabled:opacity-50 hover:bg-pink-600"
               >
                 Next
               </button>
@@ -195,13 +177,11 @@ const SavedNotes = () => {
           </div>
         </div>
 
-        {/* DELETE CONFIRMATION MODAL */}
+        {/* ================= DELETE MODAL ================= */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-xl shadow-xl w-80 text-center">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Delete this note?
-              </h2>
+            <div className="bg-white p-6 rounded-xl w-80 text-center shadow-xl">
+              <h2 className="text-xl font-bold">Delete this note?</h2>
               <p className="text-gray-600 mt-2">
                 This action cannot be undone.
               </p>

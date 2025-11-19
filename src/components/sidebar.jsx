@@ -38,13 +38,6 @@ const Sidebar = ({ open, setOpen }) => {
           </Link>
         </li>
 
-        {/* Favourite Notes */}
-        <li onClick={() => setOpen(false)}>
-          <Link to="/favourites" className="text-pink-500 hover:text-pink-700">
-            Favourite Notes
-          </Link>
-        </li>
-
         {/* Library */}
         <li onClick={() => setOpen(false)}>
           <Link to="/library" className="text-pink-500 hover:text-pink-700">

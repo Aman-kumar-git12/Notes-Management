@@ -26,16 +26,11 @@ const NotesPage = () => {
         title,
         content: text,
       });
-
       setTitle("");
       setText("");
-
-      console.log("Saved:", res.data);
-
       // Show success message
       setSuccessMsg("Note saved successfully!");
     } catch (err) {
-      console.error("Save error:", err);
       setErrorMsg(err.response?.data?.message || "Error saving note");
     }
   };

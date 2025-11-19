@@ -14,7 +14,8 @@ export const UserProvider = ({ children }) => {
         setUser(res.data.user);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log("Error logging in:", err);
         setUser(null);
         setLoading(false);
       });
