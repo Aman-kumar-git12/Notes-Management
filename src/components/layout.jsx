@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Navbar from "./navbar.jsx";
 import Sidebar from "./sidebar.jsx";
+import { ToggleContext } from "../context/togggleContext.jsx";
 
-const Layout = ({ children, dark, setDark }) => {
+const Layout = ({ children }) => {
   const [open, setOpen] = useState(false);
+  const { dark } = useContext(ToggleContext);
 
   return (
     <div
@@ -13,10 +15,10 @@ const Layout = ({ children, dark, setDark }) => {
       onClick={() => open && setOpen(false)}
     >
       {/* Navbar */}
-      <Navbar dark={dark} setDark={setDark} open={open} setOpen={setOpen} />
+      <Navbar open={open} setOpen={setOpen} />
 
       {/* Sidebar */}
-      <Sidebar dark={dark} open={open} setOpen={setOpen} />
+      <Sidebar open={open} setOpen={setOpen} />
 
       {/* Main Content */}
       {children}

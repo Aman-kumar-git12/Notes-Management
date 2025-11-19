@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { ToggleContext } from "../context/togggleContext.jsx";
 
-const Sidebar = ({ dark, open, setOpen }) => {
+const Sidebar = ({ open, setOpen }) => {
+  const { dark } = useContext(ToggleContext);
   return (
     <div
       onClick={(e) => e.stopPropagation()}
@@ -17,7 +19,7 @@ const Sidebar = ({ dark, open, setOpen }) => {
 
         {/* Home */}
         <li onClick={() => setOpen(false)}>
-          <Link to="/" className="text-pink-500 hover:text-pink-700">
+          <Link to="/home" className="text-pink-500 hover:text-pink-700">
             Home
           </Link>
         </li>

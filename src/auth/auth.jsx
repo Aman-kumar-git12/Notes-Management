@@ -14,7 +14,7 @@ export default function AuthPage() {
 
   // Redirect to notes if already logged in
   if (!loading && user) {
-    navigate('/notes');
+    navigate('/home');
     return null;
   }
 
@@ -46,7 +46,7 @@ export default function AuthPage() {
       // Update user context with the response
       setUser(res.data.user || res.data);
       setLoadingSubmit(false);
-      navigate('/notes');
+      navigate('/home');
     } catch (err) {
       setLoadingSubmit(false);
       const errorMsg = err.response?.data?.message || err.message || "Signup failed. Please try again.";
@@ -73,7 +73,7 @@ export default function AuthPage() {
       // Update user context with the response
       setUser(res.data.user || res.data);
       setLoadingSubmit(false);
-      navigate('/notes');
+      navigate('/home');
     } catch (err) {
       setLoadingSubmit(false);
       const errorMsg = err.response?.data?.message || err.message || "Login failed. Please try again.";

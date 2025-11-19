@@ -8,25 +8,30 @@ import ProfilePage from './components/profile.jsx'
 import SavedNotes from './components/savednotes.jsx'
 import SingleNotePage from './components/viewnotes.jsx'
 import EditNotePage from './components/editnotes.jsx'
+import { ToggleProvider } from './context/darkmodeContext.jsx'
+import Home from './components/home.jsx'
+import Library from './components/library.jsx'
 
 const App = () => {
-  
-  
-
   return (
     <UserProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<AuthPage />} />
-          <Route path='/saved-notes' element={<SavedNotes />} />
-          <Route path='/notes' element={<NotesPage />} />
-          <Route path='/viewnotes' element={<ViewNotes />} />
-          <Route path='/viewnotes/:id' element={<ViewNotes />} />
-          <Route path='/profile' element={<ProfilePage />} />
-          <Route path="/notes/:id" element={<SingleNotePage />} />
-          <Route path="/edit/:id" element={<EditNotePage />} />
-        </Routes>
-      </BrowserRouter>
+      <ToggleProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/library' element={<Library />} />
+            <Route path='/login' element={<AuthPage />} />
+            <Route path='/home' element={<Home />} />
+            <Route path='/saved-notes' element={<SavedNotes />} />
+            <Route path='/notes' element={<NotesPage />} />
+            <Route path='/viewnotes' element={<ViewNotes />} />
+            <Route path='/viewnotes/:id' element={<ViewNotes />} />
+            <Route path='/profile' element={<ProfilePage />} />
+            <Route path="/notes/:id" element={<SingleNotePage />} />
+            <Route path="/edit/:id" element={<EditNotePage />} />
+          </Routes>
+        </BrowserRouter>
+      </ToggleProvider>
     </UserProvider>
   )
 }

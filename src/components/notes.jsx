@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";   // ← FIXED (import added)
 import apiClient from "../auth/apiClient/axios.js";
 import Layout from "./layout.jsx";
+import { ToggleContext } from "../context/togggleContext.jsx";
 
 const NotesPage = () => {
-  const [dark, setDark] = useState(false);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+
+  const { dark } = useContext(ToggleContext);
 
   const saveNote = async () => {
     setErrorMsg("");
@@ -42,10 +44,10 @@ const NotesPage = () => {
   
 
   return (
-    <Layout dark={dark} setDark={setDark}>
+    <Layout>
       <div
         className={`p-6 max-w-2xl mx-auto mt-10 shadow-lg rounded-xl ${
-          dark ? "bg-gray-800" : "bg-white"
+          dark ? "bg-gray-800 text-white" : "bg-white"
         }`}
       >
         <input
@@ -54,7 +56,9 @@ const NotesPage = () => {
             setTitle(e.target.value);
             if (errorMsg) setErrorMsg("");
           }}
-          className="w-full p-3 border border-pink-300 rounded-lg focus:outline-pink-400 text-lg"
+          className={`w-full p-3 border border-pink-300 rounded-lg focus:outline-pink-400 text-lg transition-colors duration-200 ${
+            dark ? "bg-gray-900 text-white placeholder-gray-400 border-gray-700" : "bg-white text-black placeholder-gray-500"
+          }`}
           placeholder="Enter title..."
         />
 
@@ -64,7 +68,9 @@ const NotesPage = () => {
             setText(e.target.value);
             if (errorMsg) setErrorMsg("");
           }}
-          className="w-full p-3 mt-4 border border-pink-300 rounded-lg h-64 resize-none focus:outline-pink-400 text-lg"
+          className={`w-full p-3 mt-4 border border-pink-300 rounded-lg h-64 resize-none focus:outline-pink-400 text-lg transition-colors duration-200 ${
+            dark ? "bg-gray-900 text-white placeholder-gray-400 border-gray-700" : "bg-white text-black placeholder-gray-500"
+          }`}
           placeholder="Write your note here..."
         ></textarea>
 

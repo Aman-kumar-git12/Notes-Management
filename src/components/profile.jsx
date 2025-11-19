@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import apiClient from "../auth/apiClient/axios.js";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext.jsx";
+import { ToggleContext } from "../context/togggleContext.jsx";
 import Layout from "./layout.jsx";
 
 export default function ProfilePage() {
   const { user } = useContext(UserContext);
-  const [dark, setDark] = useState(false);
+  const { dark } = useContext(ToggleContext);
 
   // LOGOUT FUNCTION
   const handleLogout = async () => {
@@ -19,14 +20,14 @@ export default function ProfilePage() {
   };
 
   return (
-    <Layout dark={dark} setDark={setDark}>
+    <Layout>
       <div className="flex justify-center items-center p-6 flex-1">
         <div className={`shadow-lg rounded-2xl p-8 w-full max-w-sm text-center ${
           dark ? "bg-gray-800 text-white" : "bg-white text-gray-700"
         }`}>
           
           <img
-            src="https://via.placeholder.com/120"
+            src="https://cdn.vectorstock.com/i/500p/43/98/default-avatar-photo-placeholder-icon-grey-vector-38594398.jpg"
             alt="profile"
             className="w-28 h-28 rounded-full mx-auto shadow-md"
           />
