@@ -6,7 +6,8 @@ import ViewNotes from './components/viewnotes.jsx'
 import { UserProvider } from './context/useContext.jsx'
 import ProfilePage from './components/profile.jsx'
 import SavedNotes from './components/savednotes.jsx'
-
+import SingleNotePage from './components/viewnotes.jsx'
+import EditNotePage from './components/editnotes.jsx'
 
 const App = () => {
   
@@ -22,6 +23,8 @@ const App = () => {
           <Route path='/viewnotes' element={<ViewNotes />} />
           <Route path='/viewnotes/:id' element={<ViewNotes />} />
           <Route path='/profile' element={<ProfilePage />} />
+          <Route path="/notes/:id" element={<SingleNotePage />} />
+          <Route path="/edit/:id" element={<EditNotePage />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>

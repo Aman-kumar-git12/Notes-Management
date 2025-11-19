@@ -1,11 +1,13 @@
 import axios from "axios";
 
+const pro = import.meta.env.VITE_BACKEND_URL;
+
 const apiClient = axios.create({
-  baseURL: "http://localhost:3000", // Replace with your API base URL
+  baseURL: pro,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // Enable cookies to be sent with requests
+  withCredentials: true,   // VERY IMPORTANT!!
 });
 
-export default apiClient;   
+export default apiClient;

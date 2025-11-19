@@ -23,5 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-src/components/viewnotes.jsx
-src/components/editnotes.jsx
+
+

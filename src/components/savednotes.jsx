@@ -10,7 +10,9 @@ const SavedNotes = () => {
   const [page, setPage] = useState(1);
   const notesPerPage = 1;
 
-  // removed inline modal state — we'll navigate to dedicated routes
+  // Modal State
+  const [showModal, setShowModal] = useState(false);
+  const [selectedNoteId, setSelectedNoteId] = useState(null);
 
   // Fetch notes
   useEffect(() => {
@@ -20,30 +22,37 @@ const SavedNotes = () => {
       .catch((err) => console.error("Fetch notes error:", err));
   }, []);
 
-  // Mobile pagination
   const totalPages = Math.ceil(notes.length / notesPerPage);
-  const currentNotes = notes.slice((page - 1) * notesPerPage, page * notesPerPage);
+  const currentNotes = notes.slice(
+    (page - 1) * notesPerPage,
+    page * notesPerPage
+  );
 
-  // Delete Note
-  const deleteNote = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this note?")) return;
-
-    try {
-      await apiClient.delete(`/notes/${id}`);
-      setNotes(notes.filter((n) => n.id !== id));
-      alert("Note deleted!");
-    } catch (err) {
-      console.error("Delete Error:", err);
-      alert("Error deleting note.");
-    }
+  // Open delete modal
+  const confirmDelete = (id) => {
+    setSelectedNoteId(id);
+    setShowModal(true);
   };
 
-  
+  // Delete note
+  const handleDelete = async () => {
+    if (!selectedNoteId) return;
+
+    try {
+      await apiClient.delete(`/notes/${selectedNoteId}`);
+
+      // Remove from UI without reload:
+      setNotes(notes.filter((n) => n.id !== selectedNoteId));
+
+      setShowModal(false);
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+  };
 
   return (
     <Layout dark={dark} setDark={setDark}>
       <div className="max-w-4xl mx-auto p-4 mt-6">
-
         <h2 className="text-2xl font-bold mb-4">Your Notes</h2>
 
         {/* Desktop Grid */}
@@ -67,20 +76,22 @@ const SavedNotes = () => {
               {/* Buttons */}
               <div className="mt-4 flex gap-3">
                 <Link
-                  to={`/viewnotes/${note.id || note._id}`}
+                  to={`/notes/${note.id}`}
                   className="px-3 py-1 bg-blue-500 text-white rounded"
                 >
                   View
                 </Link>
+
                 <Link
-                  to={`/edit/${note.id || note._id}`}
+                  to={`/edit/${note.id}`}
                   className="px-3 py-1 bg-yellow-500 text-white rounded"
                 >
                   Edit
                 </Link>
+
                 <button
+                  onClick={() => confirmDelete(note.id)}
                   className="px-3 py-1 bg-red-500 text-white rounded"
-                  onClick={() => deleteNote(note.id)}
                 >
                   Delete
                 </button>
@@ -89,7 +100,7 @@ const SavedNotes = () => {
           ))}
         </div>
 
-        {/* MOBILE Pagination with Buttons */}
+        {/* MOBILE VIEW */}
         <div className="sm:hidden">
           {currentNotes.length > 0 && (
             <div
@@ -97,20 +108,33 @@ const SavedNotes = () => {
                 dark ? "bg-gray-800 text-white" : "bg-white"
               }`}
             >
-              <h3 className="text-xl font-semibold">{currentNotes[0].title}</h3>
+              <h3 className="text-xl font-semibold">
+                {currentNotes[0].title}
+              </h3>
               <p className="mt-2 text-gray-600">{currentNotes[0].content}</p>
 
               <p className="mt-3 text-sm text-gray-400">
                 {new Date(currentNotes[0].createdAt).toLocaleDateString()}
               </p>
 
-              {/* Buttons */}
-                <div className="mt-4 flex justify-between">
-                <Link to={`/viewnotes/${currentNotes[0].id || currentNotes[0]._id}`} className="px-3 py-1 bg-blue-500 text-white rounded">View</Link>
-                <Link to={`/edit/${currentNotes[0].id || currentNotes[0]._id}`} className="px-3 py-1 bg-yellow-500 text-white rounded">Edit</Link>
+              <div className="mt-4 flex justify-between">
+                <Link
+                  to={`/notes/${currentNotes[0].id}`}
+                  className="px-3 py-1 bg-blue-500 text-white rounded"
+                >
+                  View
+                </Link>
+
+                <Link
+                  to={`/edit/${currentNotes[0].id}`}
+                  className="px-3 py-1 bg-yellow-500 text-white rounded"
+                >
+                  Edit
+                </Link>
+
                 <button
+                  onClick={() => confirmDelete(currentNotes[0].id)}
                   className="px-3 py-1 bg-red-500 text-white rounded"
-                  onClick={() => deleteNote(currentNotes[0].id)}
                 >
                   Delete
                 </button>
@@ -118,7 +142,6 @@ const SavedNotes = () => {
             </div>
           )}
 
-          {/* Pagination */}
           <div className="flex justify-between items-center mt-3">
             <button
               disabled={page === 1}
@@ -142,6 +165,36 @@ const SavedNotes = () => {
           </div>
         </div>
       </div>
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-80 text-center">
+            <h2 className="text-xl font-semibold text-gray-800">
+              Delete this note?
+            </h2>
+            <p className="text-gray-600 mt-2">
+              This action cannot be undone.
+            </p>
+
+            <div className="flex justify-center gap-3 mt-6">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };
