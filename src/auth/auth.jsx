@@ -43,11 +43,13 @@ export default function AuthPage() {
     try {
       const res = await apiClient.post("/signup", payload);
       // Update user context with the response
+      console.log(res)
       setUser(res.data.user || res.data);
       setLoadingSubmit(false);
       navigate('/home');
     } catch (err) {
       setLoadingSubmit(false);
+      console.log(err)
       const errorMsg = err.response?.data?.message || err.message || "Signup failed. Please try again.";
       setError(errorMsg);
 
@@ -73,6 +75,7 @@ export default function AuthPage() {
       setLoadingSubmit(false);
       navigate('/home');
     } catch (err) {
+      console.log(err)
       setLoadingSubmit(false);
       const errorMsg = err.response?.data?.message || err.message || "Login failed. Please try again.";
       setError(errorMsg);
